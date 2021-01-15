@@ -5,8 +5,10 @@ const gridContainer = document.querySelector(".grid-container");
 const overlay = document.querySelector(".overlayInfo");
 const modalContainer = document.querySelector(".modal-content");
 const modalClose = document.querySelector(".modal-close");
-
-
+const search = document.getElementById('searchBox');
+const back = document.getElementById('leftArrow');
+const forward = document.getElementById('rightArrow');
+let count = [];
 
 function displayEmployees(employeeData) {
   employees = employeeData;
@@ -73,13 +75,70 @@ gridContainer.addEventListener('click', e => {
     const index = card.getAttribute('data-index');
 
     displayModal(index);
+   count.push(index);
+  //return index;
   }
 });
 
 modalClose.addEventListener('click', () => {
   overlay.classList.add("hidden");
+  count = [];
 });
 
+//Add a way to filter the driectory by name.
+  //create search box
+  //const seach
+    //don't have to rely on the API to return search results.
+    //refer to array of employees already created.
+    //write functionality that filters result once they are already on the page
+    search.addEventListener('keyup', e => {
+      //a variable for the letter that was pressed
+      let letter = e.key;
+      //a variable to make the letter uppercase
+      let newLetter = letter.toUpperCase();
+        //a new array to place the letters in
+      //    let letterArray = [];
+      //    letterArray.push(newLetter);
+      //    console.log(letterArray);
+      //create a new array which stores the first and last names of each employee
+      let names = employees.map((employee) => employee.name.first + " " + employee.name.last);
+      console.log(names);
+      let filterNames = names.filter(name => name.charAt(0) === newLetter)
+      console.log(filterNames);
+
+      //filter: search.value if matches employee
+      //convert all to uppercase
+      //if it matches keep the card shown
+      //else hide the card
+  });
+
+  //Add a way to move back and forth between employee detail windows when the modal window is open
+  //Add a "left Arrow" button to the modal
+  //add a "right arrow" button to the modal
+  //left arrow.addEventListener('click')... show the employee modal -1 in the array.
+  back.addEventListener('click', e => {
+   count -=1;
+   if (count >= 0){
+   displayModal(count);
+  // console.log(count);
+ }  else if (count < 0 ) {
+   count = 11;
+  // console.log(count);
+   displayModal(count);
+   }
+  });
+  //right arrow.addEventListener('click')... show the employee modal +1 in the array.
+  forward.addEventListener('click', e => {
+    count +=1;
+    if (count <= 11){
+      displayModal(count);
+  //    console.log(count);
+    } else if (count > 11) {
+      count = 0;
+  //    console.log(count);
+      displayModal(count);
+    }
+  });
 //fetch data from API
 
 fetch(urlAPI)

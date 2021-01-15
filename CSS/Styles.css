@@ -128,13 +128,30 @@ Lightbox
   padding: 75px 0px;
 }
 
+button {
+  cursor: pointer;
+  border: none;
+  background-color: #FFF;
+}
+
+#leftArrow, #rightArrow {
+  position: absolute;
+  top: 100px;
+  font-size: 3em;
+}
+
+#leftArrow {
+  left: 30px;
+}
+
+#rightArrow {
+  right: 30px;
+}
+
 .modal-close {
   position: absolute;
   right: 15px;
   top: 5px;
-  cursor: pointer;
-  border: none;
-  background-color: #FFF;
   padding-right: 15px;
 }
 
