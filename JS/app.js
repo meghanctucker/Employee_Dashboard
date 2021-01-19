@@ -8,7 +8,8 @@ const modalClose = document.querySelector(".modal-close");
 const search = document.getElementById('searchBox');
 const back = document.getElementById('leftArrow');
 const forward = document.getElementById('rightArrow');
-let count = [];
+const cardList = document.getElementsByClassName('card');
+//let count = overlay.getAttribute('data-index');
 
 function displayEmployees(employeeData) {
   employees = employeeData;
@@ -23,7 +24,7 @@ function displayEmployees(employeeData) {
     let city = employee.location.city;
     let picture = employee.picture;
 
-    // template literals makethis so much cleaner!
+    // template literals make this so much cleaner!
     employeeHTML += `
       <div class="card" data-index="${index}">
         <img class="avatarImage" src="${picture.large}" />
@@ -48,6 +49,7 @@ function displayModal(index) {
   let date = new Date(dob.date);
 
   const modalHTML = `
+  <div data-index="${index}"></div>
   <img class="avatarImage" src="${picture.large}" />
   <div class="text-container">
     <p class="avatarName">${name.first} ${name.last}</p>
@@ -75,8 +77,6 @@ gridContainer.addEventListener('click', e => {
     const index = card.getAttribute('data-index');
 
     displayModal(index);
-   count.push(index);
-  //return index;
   }
 });
 
@@ -85,64 +85,76 @@ modalClose.addEventListener('click', () => {
   count = [];
 });
 
-//Add a way to filter the driectory by name.
-  //create search box
-  //const seach
-    //don't have to rely on the API to return search results.
-    //refer to array of employees already created.
-    //write functionality that filters result once they are already on the page
-    search.addEventListener('keyup', e => {
-      //a variable for the letter that was pressed
-      let letter = e.key;
-      //a variable to make the letter uppercase
-      let newLetter = letter.toUpperCase();
-        //a new array to place the letters in
-      //    let letterArray = [];
-      //    letterArray.push(newLetter);
-      //    console.log(letterArray);
-      //create a new array which stores the first and last names of each employee
-      let names = employees.map((employee) => employee.name.first + " " + employee.name.last);
-      console.log(names);
-      let filterNames = names.filter(name => name.charAt(0) === newLetter)
-      console.log(filterNames);
 
-      //filter: search.value if matches employee
-      //convert all to uppercase
-      //if it matches keep the card shown
-      //else hide the card
-  });
 
-  //Add a way to move back and forth between employee detail windows when the modal window is open
-  //Add a "left Arrow" button to the modal
-  //add a "right arrow" button to the modal
-  //left arrow.addEventListener('click')... show the employee modal -1 in the array.
-  back.addEventListener('click', e => {
-   count -=1;
-   if (count >= 0){
-   displayModal(count);
-  // console.log(count);
- }  else if (count < 0 ) {
-   count = 11;
-  // console.log(count);
-   displayModal(count);
-   }
-  });
-  //right arrow.addEventListener('click')... show the employee modal +1 in the array.
-  forward.addEventListener('click', e => {
-    count +=1;
-    if (count <= 11){
-      displayModal(count);
-  //    console.log(count);
-    } else if (count > 11) {
-      count = 0;
-  //    console.log(count);
-      displayModal(count);
-    }
-  });
+
 //fetch data from API
-
 fetch(urlAPI)
   .then(res => res.json())
   .then(res => res.results)
   .then(displayEmployees)
   .catch(err => console.log(err))
+
+
+
+//create a search filter for employees
+  //add an event listener in the searchbox, triggered by the keyup event
+search.addEventListener('keyup', e => {
+    //create variables for the value in the search box (filter), the cards (cardlist)
+    //and an open array to store the names of employees in
+    const filter = search.value.toUpperCase();
+
+    const nameIndex = [];// key/value: name/ name
+  // create a loop which will place the names inside the cards into the new array
+    for (let i = 0; i < cardList.length; i ++) {
+        let cardName = cardList[i].children[1].children[0].innerHTML;
+        nameIndex.push(cardName);
+    }
+
+      //create a loop which will compare the input on the searchbox to the list of names in the new array
+        for (let i=0; i<nameIndex.length; i++){
+          let txtValue = nameIndex[i];
+          //if the value of the search box is the same as a name
+          if(txtValue.toUpperCase().indexOf(filter)>-1){
+            //do nothing to the card
+           cardList[i].style.display = "";
+          } else {
+            //hide the card
+            cardList[i].style.display = "none";
+          }
+        }
+    });
+
+    //Add a way to move back and forth between employee detail windows when the modal window is open
+    //Add a "left Arrow" button to the modal
+    //add a "right arrow" button to the modal
+    //left arrow.addEventListener('click')... show the employee modal -1 in the array.
+    back.addEventListener('click', e => {
+    let dataIndex = [];
+      for (let i = 0; i < cardList.length; i ++) {
+          let cardNumber = cardList[i].getAttribute('data-index');
+          dataIndex.push(cardNumber);
+      }
+      //filter through dataIndex and if the value of dataIndex == modal's data index, then do stuff
+     count -=1;
+     if (count >= 0){
+     displayModal(count);
+   }  else if (count < 0 ) {
+     count = 11;
+     displayModal(count);
+     }
+    });
+
+
+    //right arrow.addEventListener('click')... show the employee modal +1 in the array.
+   forward.addEventListener('click', e => {
+     console.log(count);
+     count ++;
+      if (count >= 0 && count < 12){
+        console.log(count);
+      displayModal(count);
+    }  else {
+      count = 0;
+     displayModal(count);
+      }
+   });
