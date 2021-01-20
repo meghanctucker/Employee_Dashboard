@@ -9,7 +9,6 @@ const search = document.getElementById('searchBox');
 const back = document.getElementById('leftArrow');
 const forward = document.getElementById('rightArrow');
 const cardList = document.getElementsByClassName('card');
-//let count = overlay.getAttribute('data-index');
 
 function displayEmployees(employeeData) {
   employees = employeeData;
@@ -24,7 +23,7 @@ function displayEmployees(employeeData) {
     let city = employee.location.city;
     let picture = employee.picture;
 
-    // template literals make this so much cleaner!
+    // template literal of the html
     employeeHTML += `
       <div class="card" data-index="${index}">
         <img class="avatarImage" src="${picture.large}" />
@@ -49,7 +48,7 @@ function displayModal(index) {
   let date = new Date(dob.date);
 
   const modalHTML = `
-  <div data-index="${index}"></div>
+  <div id="finder" data-index="${index}"></div>
   <img class="avatarImage" src="${picture.large}" />
   <div class="text-container">
     <p class="avatarName">${name.first} ${name.last}</p>
@@ -82,10 +81,8 @@ gridContainer.addEventListener('click', e => {
 
 modalClose.addEventListener('click', () => {
   overlay.classList.add("hidden");
-  count = [];
+
 });
-
-
 
 
 //fetch data from API
@@ -104,7 +101,7 @@ search.addEventListener('keyup', e => {
     //and an open array to store the names of employees in
     const filter = search.value.toUpperCase();
 
-    const nameIndex = [];// key/value: name/ name
+    const nameIndex = [];
   // create a loop which will place the names inside the cards into the new array
     for (let i = 0; i < cardList.length; i ++) {
         let cardName = cardList[i].children[1].children[0].innerHTML;
@@ -125,36 +122,33 @@ search.addEventListener('keyup', e => {
         }
     });
 
+//let finder = document.getElementById('finder').getAttribute('data-index');
     //Add a way to move back and forth between employee detail windows when the modal window is open
     //Add a "left Arrow" button to the modal
     //add a "right arrow" button to the modal
     //left arrow.addEventListener('click')... show the employee modal -1 in the array.
     back.addEventListener('click', e => {
-    let dataIndex = [];
-      for (let i = 0; i < cardList.length; i ++) {
-          let cardNumber = cardList[i].getAttribute('data-index');
-          dataIndex.push(cardNumber);
-      }
+      let finder = document.getElementById('finder').getAttribute('data-index');
       //filter through dataIndex and if the value of dataIndex == modal's data index, then do stuff
-     count -=1;
-     if (count >= 0){
-     displayModal(count);
-   }  else if (count < 0 ) {
-     count = 11;
-     displayModal(count);
+     finder -=1;
+     if (finder >= 0){
+     displayModal(finder);
+   }  else if (finder < 0 ) {
+     finder = 11;
+     displayModal(finder);
      }
     });
 
 
     //right arrow.addEventListener('click')... show the employee modal +1 in the array.
    forward.addEventListener('click', e => {
-     console.log(count);
-     count ++;
-      if (count >= 0 && count < 12){
-        console.log(count);
-      displayModal(count);
-    }  else {
-      count = 0;
-     displayModal(count);
-      }
+     let finder = document.getElementById('finder').getAttribute('data-index');
+     //filter through dataIndex and if the value of dataIndex == modal's data index, then do stuff
+    finder ++;
+    if (finder >= 0 && finder < 12){
+      displayModal(finder);
+  }  else {
+    finder = 0;
+    displayModal(finder);
+    }
    });
